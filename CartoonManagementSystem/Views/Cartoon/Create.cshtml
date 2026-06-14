@@ -1,0 +1,60 @@
+@model CartoonManagementSystem.Models.Cartoon
+
+@{
+    ViewData["Title"] = "Add New Cartoon";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow border-0">
+            <div class="card-header bg-success text-white py-3">
+                <h4 class="mb-0"><i class="fas fa-plus-circle"></i> Add Cartoon Entry</h4>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-bold">Cartoon Title</label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g., Tom and Jerry" required />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Genre" class="form-label fw-bold">Genre Classification</label>
+                        <select asp-for="Genre" class="form-select">
+                            <option value="Action">Action</option>
+                            <option value="Comedy">Comedy</option>
+                            <option value="Sci-Fi">Sci-Fi</option>
+                            <option value="Classic">Classic Anime</option>
+                            <option value="Slapstick">Slapstick Comedy</option>
+                        </select>
+                        <span asp-validation-for="Genre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AverageRating" class="form-label fw-bold">System Rating Score (0.0 - 5.0)</label>
+                        <input asp-for="AverageRating" type="number" step="0.1" min="0" max="5" class="form-control" placeholder="4.5" required />
+                        <span asp-validation-for="AverageRating" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Upload Cover Poster Image</label>
+                        <input type="file" name="imageFile" class="form-control" accept="image/*" required />
+                        <small class="text-muted">Accepts any standard graphic image format (.jpg, .png, .jpeg)</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-bold">Series Summary Description</label>
+                        <textarea asp-for="Description" rows="4" class="form-control" placeholder="Write a brief storyline synopsis here..."></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-success px-4">Save Entry</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
