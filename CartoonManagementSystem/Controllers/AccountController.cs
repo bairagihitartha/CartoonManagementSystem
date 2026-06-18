@@ -24,13 +24,10 @@ namespace CartoonManagementSystem.Controllers
         [HttpGet] public IActionResult Login() => View(new Account());
 
         [HttpPost]
-        public async Task<IActionResult> RegisterUser(Account model) => await ExecRegistration(model, "User");
-
-        [HttpPost]
-        public async Task<IActionResult> RegisterAdmin(Account model) => await ExecRegistration(model, "Admin");
-
-        private async Task<IActionResult> ExecRegistration(Account model, string role)
+        [ValidateAntiForgeryToken] // Protects against cross-site request forgery
+        public async Task<IActionResult> RegisterUser(Account model)
         {
+            // If the incoming model fails basic validation (e.g., invalid email structure), return early
             if (!ModelState.IsValid) return View("Register", model);
 
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
@@ -38,15 +35,20 @@ namespace CartoonManagementSystem.Controllers
 
             if (result.Succeeded)
             {
-                if (!await _roleManager.RoleExistsAsync(role))
+                // Hardcoded safety constraint: Public signups can ONLY be assigned the "User" role
+                string targetRole = "User";
+
+                if (!await _roleManager.RoleExistsAsync(targetRole))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
+                    await _roleManager.CreateAsync(new IdentityRole(targetRole));
                 }
-                await _userManager.AddToRoleAsync(user, role);
+
+                await _userManager.AddToRoleAsync(user, targetRole);
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Cartoon");
             }
 
+            // If Identity password/validation requirements fail, attach errors to UI
             foreach (var error in result.Errors) ModelState.AddModelError("", error.Description);
             return View("Register", model);
         }

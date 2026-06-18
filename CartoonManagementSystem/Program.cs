@@ -51,4 +51,51 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Cartoon}/{action=Index}/{id?}");
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        // 1. Dynamically seed the base verification roles if they don't exist
+        if (!await roleManager.RoleExistsAsync("Admin"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
+        }
+        if (!await roleManager.RoleExistsAsync("User"))
+        {
+            await roleManager.CreateAsync(new IdentityRole("User"));
+        }
+
+        // 2. Seed Default Administrator 
+        string adminEmail = "mehow@gmail.com";
+        string adminPassword = "123456"; // Meets your RequiredLength = 6 rule
+
+        var defaultAdmin = await userManager.FindByEmailAsync(adminEmail);
+        if (defaultAdmin == null)
+        {
+            var newAdmin = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+
+            var result = await userManager.CreateAsync(newAdmin, adminPassword);
+            if (result.Succeeded)
+            {
+                // Force into the protected Admin tracking bracket
+                await userManager.AddToRoleAsync(newAdmin, "Admin");
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        // Fail-safe protection to make sure configuration crashes don't break app start
+        Console.WriteLine($"Startup Seeding Error: {ex.Message}");
+    }
+}
+
 app.Run();
