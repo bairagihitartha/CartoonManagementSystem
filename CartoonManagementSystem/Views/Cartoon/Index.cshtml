@@ -286,6 +286,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <script>
+        // ==========================================
+        // INSTANT SEARCH METHOD FIX
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById('instantSearch');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function (e) {
+                    const searchQuery = e.target.value.toLowerCase().trim();
+
+                    // Targets only the cartoon grid columns inside your card layout row
+                    const cartoonColumns = document.querySelectorAll('.row .col-md-4.mb-3');
+
+                    cartoonColumns.forEach(column => {
+                        const cardTitle = column.querySelector('.card-title');
+
+                        if (cardTitle) {
+                            const cartoonName = cardTitle.textContent.toLowerCase();
+
+                            if (cartoonName.includes(searchQuery)) {
+                                column.style.setProperty('display', '', 'important');
+                            } else {
+                                column.style.setProperty('display', 'none', 'important');
+                            }
+                        }
+                    });
+                });
+
+                // Prevent pressing "Enter" inside search from submitting/reloading form
+                searchInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+
         const chatbotToggle = document.getElementById('chatbotToggle');
         const chatbotWindow = document.getElementById('chatbotWindow');
         const closeChat = document.getElementById('closeChat');
