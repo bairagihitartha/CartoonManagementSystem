@@ -25,7 +25,7 @@ namespace CartoonManagementSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken] // Protects against cross-site request forgery
-        public async Task<IActionResult> RegisterUser(Account model)
+        public async Task<IActionResult> Register(Account model)
         {
             // If the incoming model fails basic validation (e.g., invalid email structure), return early
             if (!ModelState.IsValid) return View("Register", model);

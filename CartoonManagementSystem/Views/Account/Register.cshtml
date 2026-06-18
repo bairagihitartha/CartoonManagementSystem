@@ -10,7 +10,7 @@
                 <h4 class="mb-0"><i class="fas fa-user-plus"></i> ToonSystem Registration</h4>
             </div>
             <div class="card-body p-4">
-                <form asp-action="RegisterUser" method="post">
+                <form asp-action="Register" method="post">
                     @Html.AntiForgeryToken()
                     <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
 
