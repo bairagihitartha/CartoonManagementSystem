@@ -18,7 +18,7 @@ namespace CartoonManagementSystem.Controllers
             _hostEnvironment = hostEnvironment;
         }
 
-        // FEATURE 3: Search & Filter integrated into Index
+        //Search & Filter integrated into Index
         public async Task<IActionResult> Index(string searchString, string genreFilter)
         {
             var cartoons = _context.Cartoons.Include(c => c.Ratings).AsQueryable();
@@ -44,7 +44,7 @@ namespace CartoonManagementSystem.Controllers
             return View(cartoon);
         }
 
-        // FEATURE 4: Only Admin can create/edit/delete
+        //Only Admin can create/edit/delete
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public IActionResult Create() => View();
@@ -87,7 +87,7 @@ namespace CartoonManagementSystem.Controllers
             return View(cartoon);
         }
 
-        // FEATURE 4: Rating System 
+        //Rating System 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Rate(int cartoonId, int stars)
@@ -110,8 +110,7 @@ namespace CartoonManagementSystem.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Details), new { id = cartoonId });
         }
-        // NEW ADMIN DELETE METHOD EXECUTION 
-        // ==========================================
+        //ADMIN DELETE METHOD EXECUTION 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
